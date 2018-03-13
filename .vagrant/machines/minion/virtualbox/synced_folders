@@ -1,0 +1,1 @@
+{"virtualbox":{"/etc/salt/":{"guestpath":"/etc/salt","hostpath":"/home/droccia/Code/arch/debian/minion/etc","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/droccia/Code/arch/debian","disabled":false,"__vagrantfile":true}}}
