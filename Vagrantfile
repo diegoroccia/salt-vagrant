@@ -12,21 +12,21 @@ Vagrant.configure("2") do |config|
   SHELL
 
   config.vm.define "master1" do |master1|
-     master1.vm.provision "shell", inline: 'DEBIAN_FRONTEND=NONINTERACTIVE apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -qqy salt-master'
+     master1.vm.provision "shell", inline: 'DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -qqy salt-master'
      master1.vm.synced_folder "master/srv", "/srv/"
      master1.vm.synced_folder "master/etc", "/etc/salt/"
      master1.vm.hostname = "master1"
   end
 
   config.vm.define "master2" do |master2|
-     master2.vm.provision "shell", inline: 'DEBIAN_FRONTEND=NONINTERACTIVE apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -qqy salt-master'
+     master2.vm.provision "shell", inline: 'DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -qqy salt-master'
      master2.vm.synced_folder "master/srv", "/srv/"
      master2.vm.synced_folder "master/etc", "/etc/salt/"
      master2.vm.hostname = "master2"
   end
 
   config.vm.define "minion" do |minion|
-     minion.vm.provision "shell", inline: 'DEBIAN_FRONTEND=NONINTERACTIVE apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -qqy salt-minion'
+     minion.vm.provision "shell", inline: 'DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -qqy salt-minion'
      minion.vm.synced_folder "minion/etc", "/etc/salt/"
      minion.vm.hostname = "minion"
   end
