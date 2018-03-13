@@ -3,6 +3,9 @@
 
 Vagrant.configure("2") do |config|
 
+  MASTER_NODES = ENV['MASTER_NODES'] || 1
+  MINION_NODES = ENV['MINION_NODES'] || 2
+
   config.vm.provider "virtualbox" do |v|
     v.linked_clone = true
     v.memory = 1024
@@ -11,13 +14,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/xenial64"
 
-  config.vm.provision "shell", inline: <<-SHELL
-     wget -q -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
-     echo 'deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest xenial main' >> /etc/apt/sources.list.d/saltstack.list
-     apt-get -qq update
-  SHELL
+  config.vm.network "private_network", type: "dhcp"
 
-  (1..2).each do |i|
+  (1..(MASTER_NODES.to_i + 1)).each do |i|
     config.vm.define "master#{i}" do |master|
        master.vm.hostname = "master#{i}"
        master.vm.synced_folder "srv", "/srv/"
@@ -25,12 +24,13 @@ Vagrant.configure("2") do |config|
           salt.install_master = true
 	  salt.master_key = "master/master.pem"
 	  salt.master_pub = "master/master.pub"
+	  salt.no_minion  = true
        end
     end
   end
 
 
-  (1..3).each do |i|
+  (1..(MINION_NODES.to_i + 1)).each do |i|
     config.vm.define "minion#{i}" do |minion|
        minion.vm.hostname = "minion#{i}"
        config.vm.provision :salt do |salt|
