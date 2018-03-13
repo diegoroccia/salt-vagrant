@@ -20,7 +20,8 @@ Vagrant.configure("2") do |config|
   (1..2).each do |i|
     config.vm.define "master#{i}" do |master|
        master.vm.hostname = "master#{i}"
-       config.vm.provision :salt do |salt|
+       master.vm.synced_folder "srv", "/srv/"
+       master.vm.provision :salt do |salt|
           salt.install_master = true
 	  salt.master_key = "master/master.pem"
 	  salt.master_pub = "master/master.pub"
