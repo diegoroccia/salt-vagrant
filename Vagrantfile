@@ -1,7 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'erb'
+
 Vagrant.configure("2") do |config|
+
+  template = ERB.new File.read("minion/config.erb")
+  p template.result(binding)
 
   MASTER_NODES = ENV['MASTER_NODES'] || 1
   MINION_NODES = ENV['MINION_NODES'] || 2
@@ -16,7 +21,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "private_network", type: "dhcp"
 
-  (1..(MASTER_NODES.to_i + 1)).each do |i|
+  (1..MASTER_NODES.to_i).each do |i|
     config.vm.define "master#{i}" do |master|
        master.vm.hostname = "master#{i}"
        master.vm.synced_folder "srv", "/srv/"
@@ -30,12 +35,12 @@ Vagrant.configure("2") do |config|
   end
 
 
-  (1..(MINION_NODES.to_i + 1)).each do |i|
+  (1..MINION_NODES.to_i).each do |i|
     config.vm.define "minion#{i}" do |minion|
        minion.vm.hostname = "minion#{i}"
        config.vm.provision :salt do |salt|
           salt.install_master = false
-	  salt.minion_config = "minion/config"
+#salt.minion_config = "minion/config"
        end
     end
   end
