@@ -2,6 +2,13 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+
+  config.vm.provider "virtualbox" do |v|
+    v.linked_clone = true
+    v.memory = 1024
+    v.cpus = 1
+  end
+
   config.vm.box = "ubuntu/xenial64"
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -11,11 +18,13 @@ Vagrant.configure("2") do |config|
   SHELL
 
   (1..2).each do |i|
-    config.vm.define "master#{i}" do |master1|
-       master1.vm.hostname = "master#{i}"
-       master1.vm.synced_folder "master/srv", "/srv/"
-       master1.vm.synced_folder "master/etc", "/etc/salt/"
-       master1.vm.provision "shell", inline: 'DEBIAN_FRONTEND=noninteractive apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install salt-master'
+    config.vm.define "master#{i}" do |master|
+       master.vm.hostname = "master#{i}"
+       config.vm.provision :salt do |salt|
+          salt.install_master = true
+	  salt.master_key = "master/master.pem"
+	  salt.master_pub = "master/master.pub"
+       end
     end
   end
 
@@ -23,8 +32,11 @@ Vagrant.configure("2") do |config|
   (1..3).each do |i|
     config.vm.define "minion#{i}" do |minion|
        minion.vm.hostname = "minion#{i}"
-       minion.vm.synced_folder "minion/etc", "/etc/salt/"
-       minion.vm.provision "shell", inline: 'DEBIAN_FRONTEND=noninteractive apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install salt-minion'
+       config.vm.provision :salt do |salt|
+          salt.install_master = false
+	  salt.minion_config = "minion/config"
+       end
     end
   end
+
 end
