@@ -14,9 +14,9 @@ it should work also with KVM but I didn't check.
 
 To be changed in the Vagrantfile
 
-* MASTER_NODES 
-* MINION_NODES 
-* VM_SUBNET 
+* MASTER_NODES (default=1)
+* MINION_NODES (default=2)
+* VM_SUBNET    (default='172.28.128')
 
 ## Usage
 
