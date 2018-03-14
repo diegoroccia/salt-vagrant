@@ -5,7 +5,7 @@ require 'erb'
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "generic/ubuntu1604"
 
   MASTER_NODES = 1
   MINION_NODES = 2
@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "master1", primary: true do |master|
        master.vm.hostname = "master1.local"
        masters << "#{SUBNET}.11" 
-       master.vm.synced_folder "srv", "/srv/"
+       master.vm.synced_folder "srv", "/srv/", type: "rsync"
        master.vm.network :private_network, :ip => "#{SUBNET}.11"
        master.vm.provision :salt do |salt|
           salt.install_master = true
@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
       config.vm.define "master#{i}" do |master|
          master.vm.hostname = "master#{i}.local"
          masters << "#{SUBNET}.#{10+i}" 
-         master.vm.synced_folder "srv", "/srv/"
+         master.vm.synced_folder "srv", "/srv/", type: "rsync"
          master.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
          master.vm.provision :salt do |salt|
             salt.install_master = true
