@@ -26,7 +26,7 @@ To be changed in the Vagrantfile
 vagrant up
 ```
 
-this will spin up all the VM and run highstate on all the minions
+this will spin up all the VM. install salt, accept the keys, and run highstate on all the minions
 
 ### to connect to a node
 
