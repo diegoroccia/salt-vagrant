@@ -4,9 +4,12 @@ Vagrantfile to start a salt setup. you can choose the number of masters and mini
 
 ## Configuration
 
-* MASTER_NODES [ default=1 ]
-* MINION_NODES [ default=2 ]
+To be changed in the Vagrantfile
+
+* MASTER_NODES 
+* MINION_NODES 
+* VM_SUBNET 
 
 ## Usage
 
-` MASTER_NODES=2 MINION_NODES=3 vagrant up `
+see vagrant basic usage

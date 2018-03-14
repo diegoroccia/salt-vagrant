@@ -1,0 +1,3 @@
+[submodule "srv"]
+	path = srv
+	url = git@github.bus.zalan.do:linus/ghost-salt.git
