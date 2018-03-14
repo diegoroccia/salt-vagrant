@@ -12,4 +12,25 @@ To be changed in the Vagrantfile
 
 ## Usage
 
-see vagrant basic usage
+### to spin up the VMs
+
+```
+vagrant up
+```
+
+this will spin up all the VM and run highstate on all the minions
+
+### to connect to a node
+
+```
+vagrant ssh <nodename>
+```
+
+default nodename has been set to master1
+
+### to destroy the VMs
+
+```
+vagrant destroy
+```
+
