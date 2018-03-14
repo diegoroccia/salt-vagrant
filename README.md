@@ -7,7 +7,7 @@ Vagrantfile to start a salt setup. you can choose the number of masters and mini
 * vagrant
 * virtualbox
 
-it should work also with KVM but I didn't check.
+it should work also with libvirt and vmware desktop, since the box I used supports all three, but I didn't check.
 
 
 ## Configuration
