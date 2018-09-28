@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 require 'json'
+require 'yaml'
 
 Vagrant.configure("2") do |config|
 
@@ -17,6 +18,8 @@ Vagrant.configure("2") do |config|
     v.memory = 1024
     v.cpus = 1
   end
+
+  minion_config = YAML.load_file("minion/config")
 
   masters = Array.new
 
@@ -38,7 +41,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  minion_config =  { :master => masters }
+  minion_config[:master] = masters 
 
   (1..MINION_NODES.to_i).each do |i|
     config.vm.define "minion#{i}" do |minion|
