@@ -1,1 +1,4 @@
 autosign_file: /etc/salt/autosign.conf
+
+engines:
+  - test:
