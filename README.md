@@ -12,12 +12,12 @@ it should work also with libvirt and vmware desktop, since the box I used suppor
 
 ## Configuration
 
-To be changed in the Vagrantfile
+To be changed in the env.yml file
 
-* MASTER_NODES (default=1)
-* MINION_NODES (default=2)
-* SUBNET    (default='172.28.128')
-* SALT_VERSION (defaut='2018.3')
+* salt_version (defaut='2018.3')
+* subnet  (default='172.28.128')
+* master_nodes (default=1)
+* minion_nodes (default=2)
 
 ### Minion configuration
 
