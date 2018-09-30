@@ -4,14 +4,19 @@
 require 'json'
 require 'yaml'
 
+env = YAML.load_file('env.yml')
+
+MASTER_NODES = env['master_nodes'].to_i or 1
+MINION_NODES = env['minion_nodes'].to_i or 2
+SUBNET = env['subnet'] or '172.28.128'
+SALT_VERSION = env['salt_version'] or '2018.3'
+
+
+minion_config = YAML.load_file("minion/config")
+
 Vagrant.configure("2") do |config|
 
   config.vm.box = "generic/ubuntu1604"
-
-  MASTER_NODES = 1
-  MINION_NODES = 1
-  SUBNET = '172.28.128'
-  SALT_VERSION = '2018.3'
 
   config.vm.provider "virtualbox" do |v|
     v.linked_clone = true
@@ -19,7 +24,7 @@ Vagrant.configure("2") do |config|
     v.cpus = 1
   end
 
-  minion_config = YAML.load_file("minion/config")
+  puts env.inspect
 
   masters = Array.new
 
@@ -44,6 +49,7 @@ Vagrant.configure("2") do |config|
   minion_config[:master] = masters 
 
   (1..MINION_NODES.to_i).each do |i|
+    puts "minion starting"
     config.vm.define "minion#{i}" do |minion|
        minion.vm.hostname = "minion#{i}.local"
        minion.vm.network :private_network, :ip => "#{SUBNET}.#{20+i}"
