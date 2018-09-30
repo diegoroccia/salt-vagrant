@@ -24,8 +24,6 @@ Vagrant.configure("2") do |config|
     v.cpus = 1
   end
 
-  puts env.inspect
-
   masters = Array.new
 
   (1..MASTER_NODES.to_i).each do |i|
@@ -49,7 +47,6 @@ Vagrant.configure("2") do |config|
   minion_config[:master] = masters 
 
   (1..MINION_NODES.to_i).each do |i|
-    puts "minion starting"
     config.vm.define "minion#{i}" do |minion|
        minion.vm.hostname = "minion#{i}.local"
        minion.vm.network :private_network, :ip => "#{SUBNET}.#{20+i}"
