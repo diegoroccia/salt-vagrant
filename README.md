@@ -16,7 +16,14 @@ To be changed in the Vagrantfile
 
 * MASTER_NODES (default=1)
 * MINION_NODES (default=2)
-* VM_SUBNET    (default='172.28.128')
+* SUBNET    (default='172.28.128')
+* SALT_VERSION (defaut='2018.3')
+
+### Minion configuration
+
+before provisioning the VMs you can edit `minion/config` to add custom configurations for minions
+
+the list of masters will be injected into the configuration during the provisioning phase
 
 ## Usage
 
