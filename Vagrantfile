@@ -7,7 +7,7 @@ require 'yaml'
 env = YAML.load_file('env.yml')
 
 MASTER_NODES = env['master_nodes'].to_i or 1
-MINION_NODES = env['minion_nodes'].to_i or 2
+MINION_NODES = env['minion_nodes'].to_i or 1
 SUBNET = env['subnet'] or '172.28.128'
 SALT_VERSION = env['salt_version'] or '2018.3'
 
@@ -15,6 +15,8 @@ SALT_VERSION = env['salt_version'] or '2018.3'
 minion_config = YAML.load_file("minion/config")
 
 Vagrant.configure("2") do |config|
+ 
+  config.ssh.forward_agent = true
 
   config.vm.box = "generic/ubuntu1604"
 
@@ -38,7 +40,7 @@ Vagrant.configure("2") do |config|
           salt.master_pub = "master/master.pub"
           salt.master_config = "master/config"
 	  salt.version = SALT_VERSION
-          salt.no_minion  = true
+          salt.no_minion = true
        end
        master.vm.provision "shell", inline: "echo '*' | sudo tee -a /etc/salt/autosign.conf; sudo systemctl restart salt-master"
     end
@@ -54,7 +56,7 @@ Vagrant.configure("2") do |config|
           salt.install_master = false
           salt.minion_json_config = minion_config.to_json
 	  salt.version = SALT_VERSION
-	  salt.run_highstate = true
+	  salt.run_highstate = false
        end
     end
   end
