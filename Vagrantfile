@@ -35,7 +35,6 @@ Vagrant.configure("2") do |config|
         salt.version = SALT_VERSION
         salt.no_minion = true
      end
-     mom.vm.provision "shell", inline: "echo '*' | sudo tee -a /etc/salt/autosign.conf; sudo systemctl restart salt-master"
   end
 
   masters = Array.new
@@ -54,7 +53,6 @@ Vagrant.configure("2") do |config|
           salt.minion_config = "syndic/minion_config"
 	  salt.version = SALT_VERSION
        end
-       master.vm.provision "shell", inline: "echo '*' | sudo tee -a /etc/salt/autosign.conf; sudo systemctl restart salt-master"
     end
   end
 

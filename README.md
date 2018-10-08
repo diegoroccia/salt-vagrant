@@ -16,7 +16,7 @@ To be changed in the env.yml file
 
 * salt_version (defaut='2018.3')
 * subnet  (default='172.28.128')
-* master_nodes (default=1)
+* master_nodes (default=1) # syndic nodes
 * minion_nodes (default=2)
 
 ### Minion configuration
@@ -41,7 +41,7 @@ this will spin up all the VM. install salt, accept the keys, and run highstate o
 vagrant ssh <nodename>
 ```
 
-default nodename has been set to master1
+default nodename has been set to mom
 
 ### to destroy the VMs
 
