@@ -6,11 +6,12 @@ require 'yaml'
 
 env = YAML.load_file('env.yml')
 
+VAGRANT_BOX = env['vagrant_box'] or "generic/ubuntu1604"
 MASTER_NODES = env['master_nodes'].to_i or 1
+SYNDIC_NODES = env['master_nodes'].to_i or 1
 MINION_NODES = env['minion_nodes'].to_i or 1
 SUBNET = env['subnet'] or '172.28.128'
 SALT_VERSION = env['salt_version'] or '2018.3'
-
 
 minion_config = YAML.load_file("minion/config")
 
@@ -18,7 +19,7 @@ Vagrant.configure("2") do |config|
  
   config.ssh.forward_agent = true
 
-  config.vm.box = "generic/ubuntu1604"
+  config.vm.box = VAGRANT_BOX
 
   config.vm.provider "virtualbox" do |v|
     v.linked_clone = true
@@ -26,10 +27,10 @@ Vagrant.configure("2") do |config|
     v.cpus = 1
   end
 
-  config.vm.define "mom", primary: true do |mom|
-     mom.vm.hostname = "mom.local"
-     mom.vm.network :private_network, :ip => "#{SUBNET}.5"
-     mom.vm.provision :salt do |salt|
+  config.vm.define "master", primary: true do |master|
+     master.vm.hostname = "master.local"
+     master.vm.network :private_network, :ip => "#{SUBNET}.5"
+     master.vm.provision :salt do |salt|
         salt.install_master = true
         salt.master_config = "master/config"
         salt.version = SALT_VERSION
@@ -37,15 +38,15 @@ Vagrant.configure("2") do |config|
      end
   end
 
-  masters = Array.new
+  syndics = Array.new
 
-  (1..MASTER_NODES.to_i).each do |i|
-    config.vm.define "master#{i}" do |master|
-       master.vm.hostname = "master#{i}.local"
-       masters << "#{SUBNET}.#{10+i}" 
-       master.vm.synced_folder "srv", "/srv/", type: "rsync"
-       master.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
-       master.vm.provision :salt do |salt|
+  (1..SYNDIC_NODES.to_i).each do |i|
+    config.vm.define "syndic#{i}" do |syndic|
+       syndic.vm.hostname = "syndic#{i}.local"
+       syndics << "#{SUBNET}.#{10+i}" 
+       syndic.vm.synced_folder "srv", "/srv/"
+       syndic.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
+       syndic.vm.provision :salt do |salt|
           salt.install_syndic = true
           salt.master_key = "syndic/master.pem"
           salt.master_pub = "syndic/master.pub"
@@ -56,7 +57,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  minion_config[:master] = masters 
+  minion_config[:master] = syndics 
 
   (1..MINION_NODES.to_i).each do |i|
     config.vm.define "minion#{i}" do |minion|
@@ -70,6 +71,5 @@ Vagrant.configure("2") do |config|
        end
     end
   end
-
 
 end
