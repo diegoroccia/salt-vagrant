@@ -8,7 +8,7 @@ env = YAML.load_file('env.yml')
 
 VAGRANT_BOX = env['vagrant_box'] or "generic/ubuntu1604"
 MASTER_NODES = env['master_nodes'].to_i or 1
-SYNDIC_NODES = env['master_nodes'].to_i or 1
+SYNDIC_NODES = env['syndic_nodes'].to_i or 1
 MINION_NODES = env['minion_nodes'].to_i or 1
 SUBNET = env['subnet'] or '172.28.128'
 SALT_VERSION = env['salt_version'] or '2018.3'
@@ -30,10 +30,12 @@ Vagrant.configure("2") do |config|
   config.vm.define "master", primary: true do |master|
      master.vm.hostname = "master.local"
      master.vm.network :private_network, :ip => "#{SUBNET}.5"
+     master.vm.network "forwarded_port",  guest: 8000, host: 8000
      master.vm.provision :salt do |salt|
+	salt.bootstrap_options = "-x python3 -p salt-api"
+        salt.version = SALT_VERSION
         salt.install_master = true
         salt.master_config = "master/config"
-        salt.version = SALT_VERSION
         salt.no_minion = true
      end
   end
@@ -47,12 +49,13 @@ Vagrant.configure("2") do |config|
        syndic.vm.synced_folder "srv", "/srv/"
        syndic.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
        syndic.vm.provision :salt do |salt|
+	  salt.bootstrap_options = "-x python3"
+	  salt.version = SALT_VERSION
           salt.install_syndic = true
           salt.master_key = "syndic/master.pem"
           salt.master_pub = "syndic/master.pub"
           salt.master_config = "syndic/config"
           salt.minion_config = "syndic/minion_config"
-	  salt.version = SALT_VERSION
        end
     end
   end
@@ -64,9 +67,10 @@ Vagrant.configure("2") do |config|
        minion.vm.hostname = "minion#{i}.local"
        minion.vm.network :private_network, :ip => "#{SUBNET}.#{20+i}"
        config.vm.provision :salt do |salt|
+	  salt.bootstrap_options = "-x python3"
+	  salt.version = SALT_VERSION
           salt.install_master = false
           salt.minion_json_config = minion_config.to_json
-	  salt.version = SALT_VERSION
 	  salt.run_highstate = false
        end
     end

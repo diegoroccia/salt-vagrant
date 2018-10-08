@@ -1,3 +1,13 @@
 ---
 order_masters: True
 auto_accept: True
+
+rest_cherrypy:
+  port: 8000
+  disable_ssl: True
+
+external_auth:
+  pam:
+    vagrant:
+      - .*
+
