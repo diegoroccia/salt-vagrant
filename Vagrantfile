@@ -26,6 +26,18 @@ Vagrant.configure("2") do |config|
     v.cpus = 1
   end
 
+  config.vm.define "mom", primary: true do |mom|
+     mom.vm.hostname = "mom.local"
+     mom.vm.network :private_network, :ip => "#{SUBNET}.5"
+     mom.vm.provision :salt do |salt|
+        salt.install_master = true
+        salt.master_config = "master/config"
+        salt.version = SALT_VERSION
+        salt.no_minion = true
+     end
+     mom.vm.provision "shell", inline: "echo '*' | sudo tee -a /etc/salt/autosign.conf; sudo systemctl restart salt-master"
+  end
+
   masters = Array.new
 
   (1..MASTER_NODES.to_i).each do |i|
@@ -35,12 +47,12 @@ Vagrant.configure("2") do |config|
        master.vm.synced_folder "srv", "/srv/", type: "rsync"
        master.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
        master.vm.provision :salt do |salt|
-          salt.install_master = true
-          salt.master_key = "master/master.pem"
-          salt.master_pub = "master/master.pub"
-          salt.master_config = "master/config"
+          salt.install_syndic = true
+          salt.master_key = "syndic/master.pem"
+          salt.master_pub = "syndic/master.pub"
+          salt.master_config = "syndic/config"
+          salt.minion_config = "syndic/minion_config"
 	  salt.version = SALT_VERSION
-          salt.no_minion = true
        end
        master.vm.provision "shell", inline: "echo '*' | sudo tee -a /etc/salt/autosign.conf; sudo systemctl restart salt-master"
     end
@@ -60,5 +72,6 @@ Vagrant.configure("2") do |config|
        end
     end
   end
+
 
 end

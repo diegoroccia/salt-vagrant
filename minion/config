@@ -1,2 +1,5 @@
 ---
 hash_type: sha256
+
+master_shuffle: True
+
