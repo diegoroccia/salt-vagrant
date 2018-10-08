@@ -1,6 +1,9 @@
 # Test Salt Environment
 
-Vagrantfile to start a salt setup. you can choose the number of masters and minions. All the masters will share the same key and the minions will be configured in multimaster mode (connected to all the masters)
+Vagrantfile to start a salt setup. 
+you can choose the number of syndics and minions. 
+All the syndics will share the same key and the minions will be configured in multimaster mode (connected to all the syndics)
+on the master node salt apis will be installed and the port 8000 (no SSL) will be exposed on the host
 
 ## Requirements
 
@@ -16,12 +19,13 @@ To be changed in the env.yml file
 
 * salt_version (defaut='2018.3')
 * subnet  (default='172.28.128')
-* master_nodes (default=1) # syndic nodes
+* syndic_nodes (default=1)
 * minion_nodes (default=2)
+* vagrant_box (default='generic/ubuntu1604')
 
 ### Minion configuration
 
-before provisioning the VMs you can edit `minion/config` to add custom configurations for minions
+before provisioning the VMs you can edit all the `*/config` files to add custom customizations
 
 the list of masters will be injected into the configuration during the provisioning phase
 
