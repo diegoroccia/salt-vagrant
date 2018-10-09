@@ -19,13 +19,14 @@ Vagrant.configure("2") do |config|
  
   config.ssh.forward_agent = true
 
-  config.vm.provision :shell, inline: 'sudo sed -i "s/DNSSEC=yes/DNSSEC=no/g" /etc/systemd/resolved.conf; sudo systemctl restart systemd-resolved.service'
+  config.vm.provision "shell", inline: 'sudo sed -i "s/DNSSEC=yes/DNSSEC=no/g" /etc/systemd/resolved.conf; sudo systemctl restart systemd-resolved.service'
   config.vm.box = VAGRANT_BOX
 
   config.vm.define "master", primary: true do |master|
      master.vm.hostname = "master.local"
      master.vm.network :private_network, :ip => "#{SUBNET}.5"
      master.vm.network "forwarded_port",  guest: 8000, host: 8000
+     master.vm.synced_folder "/home/marco/git/ghost-salt/", "/srv", type: rsync
      master.vm.provision :salt do |salt|
         salt.bootstrap_options = "-x python3 -p salt-api"
         salt.version = SALT_VERSION
@@ -41,7 +42,8 @@ Vagrant.configure("2") do |config|
     config.vm.define "syndic#{i}" do |syndic|
        syndic.vm.hostname = "syndic#{i}.local"
        syndics << "#{SUBNET}.#{10+i}" 
-       syndic.vm.synced_folder "srv", "/srv/"
+       #syndic.vm.synced_folder "srv", "/srv/"
+       syndic.vm.synced_folder "/home/marco/git/ghost-salt/", "/srv", type: rsync
        syndic.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
        syndic.vm.provision :salt do |salt|
 	  salt.bootstrap_options = "-x python3"
