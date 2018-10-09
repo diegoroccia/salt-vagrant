@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
      master.vm.synced_folder MASTER_ROOT, "/srv/" , type: "rsync"
      master.vm.network "forwarded_port",  guest: 8000, host: 8000
      master.vm.provision :salt do |salt|
-        salt.bootstrap_options = "-x python3 -p salt-api"
+        salt.bootstrap_options = "-x python2 -p salt-api"
         salt.version = SALT_VERSION
         salt.install_master = true
         salt.master_config = "master/config"
@@ -49,7 +49,7 @@ Vagrant.configure("2") do |config|
        syndic.vm.synced_folder MASTER_ROOT, "/srv/" , type: "rsync"
        syndic.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
        syndic.vm.provision :salt do |salt|
-	  salt.bootstrap_options = "-x python3"
+	  salt.bootstrap_options = "-x python2"
 	  salt.version = SALT_VERSION
           salt.install_syndic = true
           salt.master_key = "syndic/master.pem"
@@ -67,7 +67,7 @@ Vagrant.configure("2") do |config|
        minion.vm.hostname = "minion#{i}.local"
        minion.vm.network :private_network, :ip => "#{SUBNET}.#{20+i}"
        config.vm.provision :salt do |salt|
-	  salt.bootstrap_options = "-x python3"
+	  salt.bootstrap_options = "-x python2"
 	  salt.version = SALT_VERSION
           salt.install_master = false
           salt.minion_json_config = minion_config.to_json
