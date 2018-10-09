@@ -49,6 +49,20 @@ vagrant ssh <nodename>
 
 default nodename has been set to master (the MoM node)
 
+### using salt-api endpoint
+
+the endpoint is exposed on the host machine on port 8000. E.g.
+
+```
+➜   curl -sS http://localhost:8000/login \
+      -c ~/cookies.txt \
+      -H 'Accept: application/x-yaml' \
+      -d username=vagrant \
+      -d password=vagrant \
+      -d eauth=pam
+
+```
+
 ### to destroy the VMs
 
 ```
