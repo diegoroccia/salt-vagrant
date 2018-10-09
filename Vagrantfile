@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
         salt.master_config = "master/config"
         salt.no_minion = true
      end
-     master.vm.provision :shell, inline: 'sudo systemctl start salt-api'
+     master.vm.provision :shell, inline: 'sudo systemctl enable --now salt-api'
   end
 
   syndics = Array.new
