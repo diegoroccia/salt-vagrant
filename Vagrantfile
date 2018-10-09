@@ -11,7 +11,7 @@ MASTER_NODES = env['master_nodes'].to_i or 1
 SYNDIC_NODES = env['syndic_nodes'].to_i or 1
 MINION_NODES = env['minion_nodes'].to_i or 1
 SUBNET = env['subnet'] or '172.28.128'
-SALT_VERSION = env['salt_version'] or '2018.3'
+SALT_VERSION = env['salt_version'] or 'stable 2018.3'
 
 minion_config = YAML.load_file("minion/config")
 
@@ -19,20 +19,15 @@ Vagrant.configure("2") do |config|
  
   config.ssh.forward_agent = true
 
+  config.vm.provision :shell, inline: 'sudo sed -i "s/DNSSEC=yes/DNSSEC=no/g" /etc/systemd/resolved.conf; sudo systemctl restart systemd-resolved.service'
   config.vm.box = VAGRANT_BOX
-
-  config.vm.provider "virtualbox" do |v|
-    v.linked_clone = true
-    v.memory = 1024
-    v.cpus = 1
-  end
 
   config.vm.define "master", primary: true do |master|
      master.vm.hostname = "master.local"
      master.vm.network :private_network, :ip => "#{SUBNET}.5"
      master.vm.network "forwarded_port",  guest: 8000, host: 8000
      master.vm.provision :salt do |salt|
-	salt.bootstrap_options = "-x python3 -p salt-api"
+        salt.bootstrap_options = "-x python3 -p salt-api"
         salt.version = SALT_VERSION
         salt.install_master = true
         salt.master_config = "master/config"
