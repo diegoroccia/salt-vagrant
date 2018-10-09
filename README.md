@@ -7,8 +7,8 @@ on the master node salt apis will be installed and the port 8000 (no SSL) will b
 
 ## TODO: 
 
-[ ] master IP is hardcoded, must depend on the subnet configuration
-[ ] install a minion cache that supports multimaster ( consul/redis? )
+* master IP is hardcoded, must depend on the subnet configuration
+* install a minion cache that supports multimaster ( consul/redis? )
 
 ## Requirements
 
