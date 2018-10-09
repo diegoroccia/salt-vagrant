@@ -8,6 +8,7 @@ env = YAML.load_file('env.yml')
 
 VAGRANT_BOX = env['vagrant_box'] or "generic/ubuntu1604"
 MASTER_NODES = env['master_nodes'].to_i or 1
+MASTER_ROOT  = env['master_root'] or 'srv'
 SYNDIC_NODES = env['syndic_nodes'].to_i or 1
 MINION_NODES = env['minion_nodes'].to_i or 1
 SUBNET = env['subnet'] or '172.28.128'
@@ -21,12 +22,13 @@ Vagrant.configure("2") do |config|
 
   # Fix for DNSSEC on ubuntu bionic
 
-  config.vm.provision :shell, inline: 'sudo sed -i "s/DNSSEC=yes/DNSSEC=no/g" /etc/systemd/resolved.conf; sudo systemctl restart systemd-resolved.service'
+  config.vm.provision "shell", inline: 'sudo sed -i "s/DNSSEC=yes/DNSSEC=no/g" /etc/systemd/resolved.conf; sudo systemctl restart systemd-resolved.service'
   config.vm.box = VAGRANT_BOX
 
   config.vm.define "master", primary: true do |master|
      master.vm.hostname = "master.local"
      master.vm.network :private_network, :ip => "#{SUBNET}.5"
+     master.vm.synced_folder MASTER_ROOT, "/srv/" , type: "rsync"
      master.vm.network "forwarded_port",  guest: 8000, host: 8000
      master.vm.provision :salt do |salt|
         salt.bootstrap_options = "-x python3 -p salt-api"
@@ -44,7 +46,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "syndic#{i}" do |syndic|
        syndic.vm.hostname = "syndic#{i}.local"
        syndics << "#{SUBNET}.#{10+i}" 
-       syndic.vm.synced_folder "srv", "/srv/" , type: "rsync"
+       syndic.vm.synced_folder MASTER_ROOT, "/srv/" , type: "rsync"
        syndic.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
        syndic.vm.provision :salt do |salt|
 	  salt.bootstrap_options = "-x python3"
