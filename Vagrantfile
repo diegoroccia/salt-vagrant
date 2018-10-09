@@ -41,7 +41,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "syndic#{i}" do |syndic|
        syndic.vm.hostname = "syndic#{i}.local"
        syndics << "#{SUBNET}.#{10+i}" 
-       syndic.vm.synced_folder "srv", "/srv/"
+       syndic.vm.synced_folder "srv", "/srv/" , type: "rsync"
        syndic.vm.network :private_network, :ip => "#{SUBNET}.#{10+i}"
        syndic.vm.provision :salt do |salt|
 	  salt.bootstrap_options = "-x python3"
