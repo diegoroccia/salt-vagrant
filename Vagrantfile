@@ -19,6 +19,8 @@ Vagrant.configure("2") do |config|
  
   config.ssh.forward_agent = true
 
+  # Fix for DNSSEC on ubuntu bionic
+
   config.vm.provision :shell, inline: 'sudo sed -i "s/DNSSEC=yes/DNSSEC=no/g" /etc/systemd/resolved.conf; sudo systemctl restart systemd-resolved.service'
   config.vm.box = VAGRANT_BOX
 
@@ -33,6 +35,7 @@ Vagrant.configure("2") do |config|
         salt.master_config = "master/config"
         salt.no_minion = true
      end
+     master.vm.provision :shell, inline: 'sudo systemctl start salt-api'
   end
 
   syndics = Array.new
