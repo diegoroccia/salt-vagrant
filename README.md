@@ -5,19 +5,21 @@ you can choose the number of syndics and minions.
 All the syndics will share the same key and the minions will be configured in multimaster mode (connected to all the syndics)
 on the master node salt apis will be installed and the port 8000 (no SSL) will be exposed on the host
 
+## TODO: 
+
+[ ] master IP is hardcoded, must depend on the subnet configuration
+[ ] install a minion cache that supports multimaster ( consul/redis? )
+
 ## Requirements
 
 * vagrant
-* virtualbox
-
-it should work also with libvirt and vmware desktop, since the box I used supports all three, but I didn't check.
-
+* virtualbox/libvirt
 
 ## Configuration
 
 To be changed in the env.yml file
 
-* salt_version (defaut='2018.3')
+* salt_version (defaut='stable 2018.3')
 * subnet  (default='172.28.128')
 * syndic_nodes (default=1)
 * minion_nodes (default=2)
@@ -34,10 +36,10 @@ the list of masters will be injected into the configuration during the provision
 ### to spin up the VMs
 
 ```
-vagrant up
+vagrant up [--provider=<provider>]
 ```
 
-this will spin up all the VM. install salt, accept the keys, and run highstate on all the minions
+this will spin up all the VM. install salt, accept the keys and expose salt-api on port 8000 on the host.
 
 ### to connect to a node
 
@@ -45,7 +47,7 @@ this will spin up all the VM. install salt, accept the keys, and run highstate o
 vagrant ssh <nodename>
 ```
 
-default nodename has been set to mom
+default nodename has been set to master (the MoM node)
 
 ### to destroy the VMs
 
